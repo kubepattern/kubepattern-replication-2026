@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Rebuilds the kp-eval evaluation state on a fresh profile (README "Environment 1: kp-eval" order), then checks that the
-# as-is engine reproduces the RQ2 baseline. The KubePattern image is not loaded (KP_SKIP_LOAD): load it with
+# engine under test ($KP_BIN) reproduces the RQ2 baseline. The KubePattern image is not loaded (KP_SKIP_LOAD): load it with
 # `minikube -p kp-eval image load <tar>` before any in-cluster run.
 set -euo pipefail
 EVAL="$(cd "$(dirname "$0")/.." && pwd)"
@@ -22,9 +22,9 @@ step "scenarios and Patterns"
 ./scripts/apply-scenario.sh >/dev/null
 ./scripts/apply-patterns.sh >/dev/null
 ./scripts/verify_fields.py | tail -2
-step "baseline with the as-is engine (out of cluster), until it settles"
+step "baseline with the engine under test (out of cluster), until it settles"
 for i in 1 2 3 4 5 6; do
-  line=$(KP_BIN="$EVAL/bin/kubepattern-69d4ffd" ./scripts/perf-local.sh rebuild/baseline-69d4ffd | tail -1)
+  line=$(./scripts/perf-local.sh "rebuild/baseline-$KP_COMMIT" | tail -1)
   d=$(jq -r .dir <<<"$line")
   if ./scripts/score.py "$d/smells.json" > "$d/score.txt"; then grep '^TOTAL' "$d/score.txt"; step "baseline reproduced"; exit 0; fi
   echo "attempt $i: $(grep '^TOTAL' "$d/score.txt")"; sed -n '/MISMATCHES/,$p' "$d/score.txt" | head -8; sleep 60

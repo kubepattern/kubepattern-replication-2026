@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Engine update "limitations": the whole replay suite, written to ../measurements/limits/.
-# The new engine is built from the checkout of KP_SRC (env/versions.env), the baseline from KP_BASE.
-#   1. RQ2 with the baseline engine (KP_BASE, default 50e0222 = dev before the update) and the
+# The new engine is built from the checkout of KP_SRC (env/versions.env), the baseline from the
+# commit KP_BASE of the engine repository (required), e.g. the engine before the limitations update.
+#   1. RQ2 with the baseline engine and the
 #      original Patterns: must reproduce the minikube results (43/52, 10/10 probes as predicted);
 #   2. RQ2 with the new engine and the original Patterns: same Smells (backward compatibility);
 #   3. RQ2 with the new engine and the v2 Patterns: scored against the truth (probes resolved);
@@ -13,12 +14,12 @@ set -euo pipefail
 source "$(dirname "$0")/env.sh"
 ROOT="$KP_SRC"
 OUT="$EVAL/measurements/limits"
-BASE="${KP_BASE:-50e0222}"
+BASE="${KP_BASE:?set KP_BASE to the commit of the baseline engine}"
 mkdir -p "$OUT" "$EVAL/bin"
 
 base_bin="$EVAL/bin/kubepattern-$BASE"
 if [[ ! -x "$base_bin" ]]; then
-  src="$(mktemp -d)"; git -C "$ROOT" archive "$(kp_ref "$BASE")" | tar x -C "$src"
+  src="$(mktemp -d)"; git -C "$ROOT" archive "$BASE" | tar x -C "$src"
   (cd "$src" && go build -o "$base_bin" ./cmd/kubepattern); rm -rf "$src"
 fi
 new_bin="$EVAL/bin/kubepattern-limits"

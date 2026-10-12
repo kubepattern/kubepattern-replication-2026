@@ -1,6 +1,6 @@
 # RQ8: does `spec.for` remove snapshot false positives without hiding persistent smells?
 
-Engine: `54dc498` (public commit `24f288a`, branch `feat/for`, which contains the WP0 changes).
+Engine: build `54dc498`, which contains the WP0 changes.
 
 **Question.** Does a minimum duration remove snapshot false positives without hiding persistent smells, and at what cost in detection latency?
 

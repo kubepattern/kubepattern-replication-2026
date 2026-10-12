@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # KubePattern on kp-krateo: the shared image/chart scripts, pointed at this profile by krateo.env.
-# Engine = $KP_COMMIT (default: the as-is engine 69d4ffd); CronJob suspended, runs are triggered by run-once.sh.
+# Engine = $KP_COMMIT (default: the commit of the kubepattern/ submodule); CronJob suspended, runs are triggered by run-once.sh.
 source "$(dirname "$0")/lib.sh"
 log "KubePattern $KP_COMMIT on $KP_PROFILE"
 podman image exists "$KP_IMAGE" || "$EVAL/scripts/build-image.sh" build

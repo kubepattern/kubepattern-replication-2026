@@ -44,7 +44,7 @@ Every script sources `env/krateo.env`, so the shared scripts in `../scripts/` ta
 | Kubernetes (minikube, kvm2, docker) | v1.34.4 |
 | Krateo PlatformOps (`krateoctl` 1.2.1, profile `no-finops`) | 3.0.2: core-provider 1.0.0, snowplow 0.20.6, frontend 1.0.27, authn 0.22.2, portal 1.3.4, resources-presenter 0.10.3 |
 | Blueprints (marketplace.krateo.io) | portal-blueprint-page 1.0.9, portal-composition-page-generic 1.4.3, github-scaffolding-with-composition-page 1.2.5 |
-| KubePattern | `69d4ffd` (as-is engine of the main results; public commit `16afa6a`), chart from `$KP_SRC` (the `kubepattern/` submodule) |
+| KubePattern | build `69d4ffd` (as-is engine of the main results); image and chart from `$KP_SRC` (the `kubepattern/` submodule) |
 | Kyverno | 1.19.1 (chart 3.9.1), `backgroundScanInterval=5m` |
 
 ## The blueprint

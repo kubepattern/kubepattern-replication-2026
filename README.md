@@ -15,7 +15,7 @@ The results, with their discussion, are in [`RESULTS.md`](RESULTS.md) and in the
 ## Contents
 - [Headline results](#headline-results)
 - [Repository layout](#repository-layout)
-- [Engine versions under test](#engine-versions-under-test)
+- [Engine under test](#engine-under-test)
 - [Requirements](#requirements)
 - [Getting the package](#getting-the-package)
 - [Environment 1: kp-eval](#environment-1-kp-eval)
@@ -65,21 +65,20 @@ RESULTS.md      results of every experiment
 
 Every script resolves paths from its own location, so the scripts can be run from anywhere. The examples below assume the repository root as working directory.
 
-## Engine versions under test
-The engine is built from the `kubepattern/` submodule, which is pinned to `0bab1b6` of `dev`. Its engine is `aec8df7` plus the D2 fix `e221eb1` of `main`: a resource type whose LIST failed fails every later pattern that reads it, with no extra request. No scenario has a failed LIST, so no result changes (the offline tests and the replay give the same numbers). Every experiment names the engine by a **label**. The label is used in image tags (`localhost/kubepattern:eval-<label>`), binaries (`bin/kubepattern-<label>`) and measurement folders.
+## Engine under test
+The `kubepattern/` submodule is the only reference to the engine. It is pinned to `1341079` of the engine's `dev` branch; it will be moved to the commit of the KubePattern release that the paper describes. Every script builds and runs that commit: `KP_COMMIT` defaults to the submodule's checked-out commit (short SHA), `scripts/build-image.sh` builds the image `localhost/kubepattern:eval-<KP_COMMIT>` from it with `git archive`, and extracts the binary `bin/kubepattern-<KP_COMMIT>`. `KP_COMMIT=<commit>` selects another commit of the engine repository.
 
-Some labels are commit SHAs from before a history rewrite of the engine repository and do not exist on GitHub. `kp_ref` in [`env/versions.env`](env/versions.env) maps them to their public commits, each anchored by a tag `eval/<label>` of the engine repository. The first three pairs have identical engine source, chart and Dockerfile; `scripts/build-image.sh` rebuilds the image of `69d4ffd` from `16afa6a` with a byte-identical binary. `wp0` was rebuilt from `b4df203` byte-identically: sha256 `cc460a0d…`, built with `go build` in `golang:1.25.8-alpine`.
+The measurements in `measurements/` were recorded during development with earlier builds of the engine. Their labels appear in folder names, image tags and tables:
 
-| Label | Public commit | Tag | Branch | Engine | Used by |
-|---|---|---|---|---|---|
-| `69d4ffd` | `16afa6a` | `eval/69d4ffd` | `dev` of Sept. 2026 | as-is engine, evaluated unmodified | RQ1–RQ6, Krateo case study |
-| `a814e4a` | `0a51e7a` | `eval/a814e4a` | `fix/per-pattern-prune` | per-pattern Smell prune (fixes D8, D9) | fix validation; KubePattern side of RQ6 |
-| `wp0` | `b4df203` | `eval/wp0` | `chore/engine-cleanup` | prune + client QPS 50/100 + linter | QPS validation (`measurements/qps/`) |
-| `54dc498` | `24f288a` | `eval/54dc498` | `feat/for` | engine update: QPS, linter, `spec.for` | engine update regression, RQ8 |
-| `50e0222` | `50e0222` | `eval/50e0222` | `feat/resolve-probes` (its base) | before the limitations update | baseline of the offline replay |
-| `aec8df7` | `aec8df7` | `eval/aec8df7` | `feat/resolve-probes` | limitations update (G1–G7, G10) | limitations update |
+| Label | Engine build | Measurements |
+|---|---|---|
+| `69d4ffd` | as-is engine, evaluated unmodified | RQ1–RQ6, Krateo case study |
+| `a814e4a` | per-pattern Smell prune (fixes D8, D9) | fix validation; KubePattern side of RQ6 |
+| `wp0` | prune + client QPS 50/100 + linter | QPS validation |
+| `54dc498` | engine update: QPS, linter, `spec.for` | engine update regression, RQ8 |
+| `aec8df7` | limitations update (G1–G7, G10) | limitations update |
 
-`KP_COMMIT=<label>` selects the engine in every script; its default is `69d4ffd`. Any other commit or branch of the engine repository is passed through unchanged.
+The pinned engine contains all these changes and reproduces the recorded correctness results: the offline tests of the engine repository give 46 / 50 Smells on `kp-eval` and 61 / 79 on `kp-krateo` (original / v2 Patterns) with 32/32 probes reverted by the ablation, and the offline replay gives 43/52/10 with the original Patterns and 10/10 resolved probes with the v2 Patterns. Timing and cost figures belong to the build that recorded them.
 
 ## Requirements
 **Host.** Linux with KVM, for the minikube `kvm2` driver: the user needs libvirt access (the `libvirt` group or a polkit rule).
@@ -126,15 +125,15 @@ cd kubepattern-replication-2026
 # if cloned without --recurse-submodules:
 git submodule update --init
 ```
-The submodule is a full clone of the engine repository, so every engine version of the table above can be built from it. To use an existing clone of the engine instead, export `KP_SRC=/path/to/kubepattern` before running any script. The Helm chart and the CRDs are taken from the checked-out tree of `KP_SRC`.
+The submodule is a full clone of the engine repository with the pinned commit checked out. To use an existing clone of the engine instead, export `KP_SRC=/path/to/kubepattern` before running any script. The Helm chart and the CRDs are taken from the checked-out tree of `KP_SRC`.
 
 ## Environment 1: kp-eval
 The cluster hosts the nine platforms. One KubePattern run analyses all of them.
 
 ```bash
 ./env/minikube-up.sh                        # profile kp-eval, Kubernetes v1.34.4, API-server audit log to stdout
-./scripts/build-image.sh build              # podman image localhost/kubepattern:eval-69d4ffd from the public commit
-./scripts/build-image.sh extract            # static binary bin/kubepattern-69d4ffd for out-of-cluster runs
+./scripts/build-image.sh build              # podman image localhost/kubepattern:eval-<KP_COMMIT> of the submodule's engine
+./scripts/build-image.sh extract            # static binary bin/kubepattern-<KP_COMMIT> for out-of-cluster runs
 for s in env/install/[0-9]*.sh; do [[ $s == *95-kyverno* ]] || "$s"; done   # KubePattern + 9 platforms (~15 min)
 ./scripts/apply-scenario.sh                 # base objects and seeded cases of the 9 scenarios
 ./scripts/apply-patterns.sh                 # the 14 evaluated Patterns
@@ -151,12 +150,12 @@ What the steps do:
 out=$(./scripts/run-once.sh check | tail -1); ./scripts/score.py "$out/smells.json"
 ```
 
-**Switching engine.** Build the image and the binary of another label, load the image, and reinstall:
+**Switching engine.** Build the image and the binary of another commit of the engine repository, load the image, and reinstall:
 ```bash
-KP_COMMIT=a814e4a ./scripts/build-image.sh all     # build, load into the profile, extract bin/kubepattern-a814e4a
-KP_COMMIT=a814e4a ./env/install/00-kubepattern.sh  # the CronJob stays suspended
+KP_COMMIT=<commit> ./scripts/build-image.sh all     # build, load into the profile, extract bin/kubepattern-<commit>
+KP_COMMIT=<commit> ./env/install/00-kubepattern.sh  # the CronJob stays suspended
 ```
-If `minikube image load` does not land, load a saved tar instead (`podman save -o bin/kubepattern-eval-<label>.tar localhost/kubepattern:eval-<label>`, then `minikube -p kp-eval image load <tar>`) and install with `KP_SKIP_LOAD=1`. The images present on the node can be listed with `kubectl get nodes -o json | jq '.items[].status.images[].names[]'`.
+If `minikube image load` does not land, load a saved tar instead (`podman save -o bin/kubepattern-eval-<commit>.tar localhost/kubepattern:eval-<commit>`, then `minikube -p kp-eval image load <tar>`) and install with `KP_SKIP_LOAD=1`. The images present on the node can be listed with `kubectl get nodes -o json | jq '.items[].status.images[].names[]'`.
 
 **Kyverno (RQ6 only).** Kyverno is installed with `env/install/95-kyverno.sh`, after the rest of the environment; see [RQ6](#reproducing-the-experiments).
 
@@ -172,7 +171,7 @@ cd krateo
 ./env/install/10-krateo.sh          # Krateo 3.0.2 (~10 min)
 ./env/install/20-chart-repo.sh      # in-cluster Helm repository with the springboot-app blueprint
 ./env/install/30-blueprint.sh       # PortalBlueprintPage -> CompositionDefinition -> 2 SpringbootApp compositions
-./env/install/40-kubepattern.sh     # KubePattern (KP_COMMIT, default 69d4ffd), CronJob suspended
+./env/install/40-kubepattern.sh     # KubePattern (the submodule's engine), CronJob suspended
 ./env/install/50-kyverno.sh         # Kyverno 1.19.1, background scan every 5 min, read RBAC
 ./env/install/60-seeds.sh           # controlled cases and 2 seeded CompositionDefinitions
 ```
@@ -185,17 +184,17 @@ The replay re-runs the correctness experiments without minikube. It uses a real 
 ```bash
 cd replay
 ./up.sh && ./crds.sh && ./scenario.sh && ./krateo.sh
-./regression.sh    # baseline engine (KP_BASE, default 50e0222) vs the engine of KP_SRC -> measurements/limits/
+KP_BASE=<commit> ./regression.sh   # a baseline engine vs the engine of KP_SRC -> measurements/limits/
 ./down.sh --purge
 ```
-Fidelity: on the replay, the baseline engine gives exactly the minikube results (46 Smells, 43/52, 10/10 probes, mutation 15/15).
+Fidelity: on the replay, the engine before the limitations update gives exactly the minikube results (46 Smells, 43/52, 10/10 probes, mutation 15/15).
 
 ## Reproducing the experiments
 Run long experiments under `systemd-inhibit --what=sleep:idle:handle-lid-switch --mode=block <cmd>`: a host suspend in the middle of a run invalidates it. Keep the KubePattern CronJob suspended, and never overlap two analysis runs (D8).
 
 All commands below run on `kp-eval` from the repository root, unless marked Krateo. Raw per-run archives go to `measurements/raw/` (git-ignored); summaries go to the tracked folders listed below.
 
-### RQ1–RQ5 (as-is engine `69d4ffd`)
+### RQ1–RQ5
 ```bash
 # RQ2 effectiveness: 3 repetitions (run 1 exercises the CREATE path, runs 2-3 the UPDATE path)
 for i in 1 2 3; do out=$(./scripts/run-once.sh full-$i | tail -1); ./scripts/score.py "$out/smells.json"; done
@@ -210,16 +209,8 @@ for i in 1 2 3; do out=$(./scripts/run-once.sh full-$i | tail -1); ./scripts/sco
 ```
 RQ4 per-run costs come from out-of-cluster runs, `./scripts/perf-local.sh <label>`: wall time, RSS and CPU via `/usr/bin/time -v`, and API requests from the audit log. The RQ1 classification of the 49 smells is analytic: `measurements/expressiveness/expressiveness.csv`, re-classified after the limitations update in `measurements/limits/expressiveness.csv`.
 
-### Fix validation (per-pattern prune, `a814e4a`)
-```bash
-KP_COMMIT=a814e4a ./scripts/build-image.sh all          # image eval-a814e4a + bin/kubepattern-a814e4a
-./scripts/gcfix-remeasure.sh a814e4a                    # before/after on the affected scenarios (~1.5 h)
-./scripts/gcfix_compare.py                              # measurements/gcfix/compare.csv, tables/gcfix.tex
-```
-This leaves the fix installed. Reinstall the as-is engine with `KP_COMMIT=69d4ffd ./env/install/00-kubepattern.sh`.
-
 ### RQ6: comparison with Kyverno
-The audit policy must include the Kyverno ServiceAccounts (it does), and the profile must be restarted after changing it. The KubePattern side uses the installed fix `a814e4a`; RQ2 and mutation results are identical with both engines.
+The audit policy must include the Kyverno ServiceAccounts (it does), and the profile must be restarted after changing it. The recorded KubePattern side used the build `a814e4a`; RQ2 and mutation results are identical with every build.
 ```bash
 KYVERNO_SCAN_INTERVAL=5m ./env/install/95-kyverno.sh
 kubectl apply -f comparison/kyverno/rbac.yaml -f comparison/kyverno/globalcontext/
@@ -239,33 +230,26 @@ REPS=5 PERIOD=300 ./scripts/staleness.sh && ./scripts/staleness_report.py <run>
 ```
 `kyverno-run.sh` restarts the reports controller to force a re-scan, waits until the reports settle, and converts every `fail` result to a smells.json-shaped file with `kyverno_reports_to_smells.py`. Both tools are then scored by the same `score.py`.
 
-### QPS validation (`wp0`)
+### RQ8 and the v2 Patterns
 ```bash
-KP_COMMIT=wp0 ./scripts/build-image.sh build && KP_COMMIT=wp0 ./scripts/build-image.sh extract
-./scripts/qps-eval.sh                                   # a814e4a vs wp0, whole cluster and the RQ4 S2 subset
-# Krateo: krateo/scripts/qps-krateo.sh
+C=$(git -C kubepattern rev-parse --short=7 HEAD)        # the engine under test
+./scripts/regression.sh "$C" incluster                  # RQ2, mutation, D8, RQ5 with the original Patterns -> measurements/regression/$C/
+./scripts/probes-v2.sh "$C"                             # v2 Patterns: probes vs truth, mutation, natural state -> measurements/limits/minikube/$C/
+KP_BIN=$PWD/bin/kubepattern-$C ./scripts/rq8.sh         # RQ8 on kp-eval (~13 min, uses Kyverno) -> measurements/rq8/
+# Krateo: krateo/scripts/regression.sh "$C", krateo/scripts/probes-v2.sh "$C", KP_BIN=$PWD/bin/kubepattern-$C krateo/scripts/rq8-dev-wiring.sh
 ```
-Results: `measurements/qps/`.
+`regression.sh` scales Kyverno's controllers to 0 while it runs and restores them at the end. Expected: the original Patterns give the RQ2 baseline and mutation 15/15; the v2 Patterns resolve 10/10 probes on `kp-eval` and 22/22 on `kp-krateo`.
 
-### Engine update (`54dc498`) and RQ8
-```bash
-KP_COMMIT=54dc498 ./scripts/build-image.sh build && KP_COMMIT=54dc498 ./scripts/build-image.sh extract
-podman save -o bin/kubepattern-eval-54dc498.tar localhost/kubepattern:eval-54dc498   # then minikube -p kp-eval image load <tar>
-./scripts/regression.sh 54dc498                         # RQ2, mutation, D8, RQ5, whole cluster, RQ4 (~1.5 h)
-KP_BIN=$PWD/bin/kubepattern-54dc498 ./scripts/rq8.sh    # RQ8 on kp-eval (~13 min)
-./scripts/engine_update_tables.py                       # measurements/tables/{engine-update,rq8}.tex
-# Krateo: krateo/scripts/regression.sh 54dc498, KP_BIN=... krateo/scripts/rq8-dev-wiring.sh
-```
-Results: `measurements/regression/54dc498/`, `measurements/cronjob-regr-54dc498/`, `measurements/rq8/`.
+### Comparisons between development builds
+These experiments compared development builds of the engine, named by the labels of [Engine under test](#engine-under-test). Their scripts take the compared builds as binaries `bin/kubepattern-<label>` and images `localhost/kubepattern:eval-<label>`; the recorded results are in the listed folders.
 
-### Limitations update (`aec8df7`)
-Build and load `aec8df7` as above, then:
-```bash
-./scripts/regression.sh aec8df7 incluster && REGR_BASE=54dc498 ./scripts/regression.sh aec8df7 outcluster
-./scripts/probes-v2.sh aec8df7                          # v2 Patterns: probes vs truth, mutation, natural state
-# Krateo: krateo/scripts/regression.sh aec8df7 && krateo/scripts/probes-v2.sh aec8df7
-```
-Results: `measurements/regression/aec8df7/`, `measurements/cronjob-regr-aec8df7/`, `measurements/limits/minikube/aec8df7/`; summary in [`measurements/limits/README.md`](measurements/limits/README.md). The offline counterpart is `replay/regression.sh`.
+| Comparison | Scripts | Results |
+|---|---|---|
+| Fix validation: `69d4ffd` vs `a814e4a` | `scripts/gcfix-remeasure.sh`, `scripts/gcfix_compare.py` | `measurements/gcfix/`, `measurements/cronjob-fix/` |
+| QPS validation: `a814e4a` vs `wp0` | `scripts/qps-eval.sh`, `krateo/scripts/qps-krateo.sh` | `measurements/qps/` |
+| Engine update: `54dc498` vs `a814e4a` | `scripts/regression.sh 54dc498`, `krateo/scripts/regression.sh 54dc498`, `scripts/engine_update_tables.py` | `measurements/regression/54dc498/`, `measurements/cronjob-regr-54dc498/` |
+| Limitations update: `aec8df7` vs `54dc498` | `REGR_BASE=54dc498 scripts/regression.sh aec8df7 outcluster`, `scripts/probes-v2.sh aec8df7` | `measurements/regression/aec8df7/`, `measurements/limits/minikube/aec8df7/` |
+| Offline replay: the engine before and after the limitations update | `KP_BASE=<commit> replay/regression.sh` | `measurements/limits/` |
 
 ### Krateo case study
 See [`krateo/README.md`](krateo/README.md), *Protocol*: three KubePattern runs, three Kyverno `equivalent/` and three `best-effort/` runs, the lifecycle through Krateo, and the comparison.
@@ -347,7 +331,7 @@ Each install script uses only Helm or release manifests (no vendor CLIs).
 `patterns/kubevela/natural/` holds two catalogue variants for the natural-state experiment; `patterns/_robustness/` holds a Pattern whose target CRD is not installed (RQ5).
 
 ### Engine semantics
-These semantics were verified in the code of the as-is engine (`69d4ffd`, public `16afa6a`). The prediction of every probe (`engine_expected`) and the independent Krateo oracle derive from them.
+These semantics were verified in the code of the as-is engine (build `69d4ffd`). The prediction of every probe (`engine_expected`) and the independent Krateo oracle derive from them.
 
 | Aspect | Behaviour |
 |---|---|

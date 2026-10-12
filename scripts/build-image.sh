@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Builds KubePattern at $KP_COMMIT (default: the engine evaluated as-is), loads the image
-# into the evaluation profile and extracts the static binary to $KP_BIN for out-of-cluster runs (RQ4).
-# The source is $KP_SRC; kp_ref (env/versions.env) maps the engine labels to its public commits.
+# Builds KubePattern at $KP_COMMIT of $KP_SRC (default: the commit checked out in the kubepattern/
+# submodule), loads the image into the evaluation profile and extracts the static binary to $KP_BIN
+# for out-of-cluster runs (RQ4).
 # Usage: [KP_COMMIT=<sha>] build-image.sh [build|load|extract|all]   (default: all)
 set -euo pipefail
 EVAL="$(cd "$(dirname "$0")/.." && pwd)"
@@ -11,7 +11,7 @@ WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
 build() {
-  git -C "$KP_SRC" archive "$(kp_ref "$KP_COMMIT")" | tar -x -C "$WORK"
+  git -C "$KP_SRC" archive "$KP_COMMIT" | tar -x -C "$WORK"
   podman build -t "$KP_IMAGE" "$WORK"
 }
 load() {
