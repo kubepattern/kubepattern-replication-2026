@@ -1,0 +1,83 @@
+
+==> [06:40:09] whole cluster: 3 measured runs each, 54dc498 vs aec8df7
+{"label":"regr-aec8df7/whole-54dc498-r1","wall_s":0.88,"max_rss_mb":30.9,"user_s":0.16,"sys_s":0.05,"smells":46,"api_requests":143,"by_verb":{"get":48,"list":49,"update":46},"phases":{"discovery":0.003,"fetch":0.14,"write":0.645,"gc":0.64},"timeout":false,"dir":"/home/gabriele/Repositories/kubepattern/evaluation/measurements/raw/perf/regr-aec8df7/whole-54dc498-r1/20261012T064009111356147Z","engine":"54dc498","rep":1,"score":"TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0"}
+{"label":"regr-aec8df7/whole-aec8df7-r1","wall_s":0.84,"max_rss_mb":31.4,"user_s":0.14,"sys_s":0.04,"smells":46,"api_requests":143,"by_verb":{"get":48,"list":49,"update":46},"phases":{"discovery":0.003,"fetch":0.112,"write":0.672,"gc":0.685},"timeout":false,"dir":"/home/gabriele/Repositories/kubepattern/evaluation/measurements/raw/perf/regr-aec8df7/whole-aec8df7-r1/20261012T064012604811133Z","engine":"aec8df7","rep":1,"score":"TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0"}
+{"label":"regr-aec8df7/whole-54dc498-r2","wall_s":0.84,"max_rss_mb":31.0,"user_s":0.12,"sys_s":0.05,"smells":46,"api_requests":143,"by_verb":{"get":48,"list":49,"update":46},"phases":{"discovery":0.003,"fetch":0.1,"write":0.682,"gc":0.691},"timeout":false,"dir":"/home/gabriele/Repositories/kubepattern/evaluation/measurements/raw/perf/regr-aec8df7/whole-54dc498-r2/20261012T064016027671863Z","engine":"54dc498","rep":2,"score":"TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0"}
+{"label":"regr-aec8df7/whole-aec8df7-r2","wall_s":0.92,"max_rss_mb":31.0,"user_s":0.14,"sys_s":0.04,"smells":46,"api_requests":143,"by_verb":{"get":48,"list":49,"update":46},"phases":{"discovery":0.004,"fetch":0.101,"write":0.683,"gc":0.783},"timeout":false,"dir":"/home/gabriele/Repositories/kubepattern/evaluation/measurements/raw/perf/regr-aec8df7/whole-aec8df7-r2/20261012T064019445062068Z","engine":"aec8df7","rep":2,"score":"TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0"}
+{"label":"regr-aec8df7/whole-54dc498-r3","wall_s":0.84,"max_rss_mb":31.1,"user_s":0.12,"sys_s":0.06,"smells":46,"api_requests":143,"by_verb":{"get":48,"list":49,"update":46},"phases":{"discovery":0.003,"fetch":0.11,"write":0.674,"gc":0.689},"timeout":false,"dir":"/home/gabriele/Repositories/kubepattern/evaluation/measurements/raw/perf/regr-aec8df7/whole-54dc498-r3/20261012T064022970335521Z","engine":"54dc498","rep":3,"score":"TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0"}
+{"label":"regr-aec8df7/whole-aec8df7-r3","wall_s":0.84,"max_rss_mb":31.2,"user_s":0.13,"sys_s":0.05,"smells":46,"api_requests":143,"by_verb":{"get":48,"list":49,"update":46},"phases":{"discovery":0.004,"fetch":0.095,"write":0.691,"gc":0.692},"timeout":false,"dir":"/home/gabriele/Repositories/kubepattern/evaluation/measurements/raw/perf/regr-aec8df7/whole-aec8df7-r3/20261012T064026416023103Z","engine":"aec8df7","rep":3,"score":"TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0"}
+
+==> [06:40:29] RQ4: S2 subset (compare with measurements/gcfix/scale-after)
+prepare: Flux controllers -> 0, only the Flux pattern installed
+  S2cold S400 rep0: wall=14.44s rss=44.3MB smells=405 api=817 timeout=False
+  S2warm S400 rep0: wall=14.43s rss=43.2MB smells=405 api=818 timeout=False
+  S2warm2 S400 rep0: wall=14.43s rss=41.8MB smells=405 api=818 timeout=False
+  S2cold S800 rep0: wall=30.51s rss=48.8MB smells=805 api=1618 timeout=False
+  S2warm S800 rep0: wall=30.51s rss=51.1MB smells=805 api=1618 timeout=False
+  S2warm2 S800 rep0: wall=30.49s rss=49.0MB smells=805 api=1618 timeout=False
+  S2stale S800 rep0: wall=14.39s rss=48.8MB smells=5 api=818 timeout=False
+  S2stale2 S800 rep0: wall=0.17s rss=39.4MB smells=5 api=18 timeout=False
+done
+restored: scale namespaces deleted, Flux controllers back, all evaluation Patterns applied
+
+==> [06:47:18] RQ4: full sweep S1/S2/S3 (compare with measurements/scale/)
+prepare: Flux controllers -> 0, only the Flux pattern installed
+S2 smells
+  S2cold S0 rep0: wall=0.17s rss=35.5MB smells=5 api=18 timeout=False
+  S2warm S0 rep0: wall=0.19s rss=39.0MB smells=5 api=18 timeout=False
+  S2cold S100 rep0: wall=2.39s rss=41.2MB smells=105 api=218 timeout=False
+  S2warm S100 rep0: wall=2.39s rss=41.9MB smells=105 api=218 timeout=False
+  S2cold S200 rep0: wall=6.4s rss=43.2MB smells=205 api=418 timeout=False
+  S2warm S200 rep0: wall=6.4s rss=42.5MB smells=205 api=418 timeout=False
+  S2cold S400 rep0: wall=14.45s rss=46.9MB smells=405 api=818 timeout=False
+  S2warm S400 rep0: wall=14.43s rss=43.9MB smells=405 api=818 timeout=False
+  S2cold S800 rep0: wall=30.5s rss=54.5MB smells=805 api=1618 timeout=False
+  S2warm S800 rep0: wall=30.5s rss=52.3MB smells=805 api=1618 timeout=False
+  S2stale S800 rep0: wall=14.4s rss=55.8MB smells=5 api=818 timeout=False
+S3 patterns
+  S3 K1 rep0: wall=0.17s rss=37.8MB smells=5 api=18 timeout=False
+  S3 K1 rep1: wall=0.17s rss=39.3MB smells=5 api=18 timeout=False
+  S3 K1 rep2: wall=0.17s rss=39.3MB smells=5 api=18 timeout=False
+  S3 K1 rep3: wall=0.17s rss=37.2MB smells=5 api=18 timeout=False
+  S3 K1 rep4: wall=0.17s rss=36.8MB smells=5 api=18 timeout=False
+  S3 K5 rep0: wall=0.33s rss=41.7MB smells=25 api=62 timeout=False
+  S3 K5 rep1: wall=0.34s rss=39.4MB smells=25 api=62 timeout=False
+  S3 K5 rep2: wall=0.33s rss=40.0MB smells=25 api=62 timeout=False
+  S3 K5 rep3: wall=0.33s rss=40.4MB smells=25 api=62 timeout=False
+  S3 K5 rep4: wall=0.34s rss=39.2MB smells=25 api=62 timeout=False
+  S3 K10 rep0: wall=0.55s rss=42.4MB smells=50 api=117 timeout=False
+  S3 K10 rep1: wall=0.54s rss=41.0MB smells=50 api=117 timeout=False
+  S3 K10 rep2: wall=0.57s rss=44.6MB smells=50 api=117 timeout=False
+  S3 K10 rep3: wall=0.56s rss=41.8MB smells=50 api=117 timeout=False
+  S3 K10 rep4: wall=0.53s rss=42.3MB smells=50 api=117 timeout=False
+  S3 K20 rep0: wall=2.59s rss=44.0MB smells=100 api=227 timeout=False
+  S3 K20 rep1: wall=2.58s rss=43.2MB smells=100 api=227 timeout=False
+  S3 K20 rep2: wall=2.59s rss=43.9MB smells=100 api=227 timeout=False
+  S3 K20 rep3: wall=2.59s rss=43.0MB smells=100 api=227 timeout=False
+  S3 K20 rep4: wall=2.63s rss=43.3MB smells=100 api=227 timeout=False
+S1 objects
+  S1 T1000 rep0: wall=4.28s rss=42.6MB smells=105 api=313 timeout=False
+  S1 T1000 rep1: wall=2.39s rss=42.3MB smells=105 api=218 timeout=False
+  S1 T1000 rep2: wall=2.4s rss=41.7MB smells=105 api=218 timeout=False
+  S1 T1000 rep3: wall=2.4s rss=42.0MB smells=105 api=218 timeout=False
+  S1 T1000 rep4: wall=2.39s rss=41.3MB smells=105 api=218 timeout=False
+  S1 T2500 rep0: wall=2.56s rss=60.0MB smells=105 api=218 timeout=False
+  S1 T2500 rep1: wall=2.56s rss=71.0MB smells=105 api=218 timeout=False
+  S1 T2500 rep2: wall=2.63s rss=64.6MB smells=105 api=218 timeout=False
+  S1 T2500 rep3: wall=2.54s rss=62.5MB smells=105 api=218 timeout=False
+  S1 T2500 rep4: wall=2.54s rss=65.5MB smells=105 api=218 timeout=False
+  S1 T5000 rep0: wall=2.79s rss=83.8MB smells=105 api=218 timeout=False
+  S1 T5000 rep1: wall=2.78s rss=92.4MB smells=105 api=218 timeout=False
+  S1 T5000 rep2: wall=2.81s rss=94.2MB smells=105 api=218 timeout=False
+  S1 T5000 rep3: wall=2.79s rss=84.7MB smells=105 api=218 timeout=False
+  S1 T5000 rep4: wall=2.79s rss=91.8MB smells=105 api=218 timeout=False
+  S1 T10000 rep0: wall=3.34s rss=149.6MB smells=105 api=218 timeout=False
+  S1 T10000 rep1: wall=3.43s rss=155.0MB smells=105 api=218 timeout=False
+  S1 T10000 rep2: wall=3.29s rss=147.3MB smells=105 api=218 timeout=False
+  S1 T10000 rep3: wall=3.32s rss=159.9MB smells=105 api=218 timeout=False
+  S1 T10000 rep4: wall=3.34s rss=163.3MB smells=105 api=218 timeout=False
+done
+restored: scale namespaces deleted, Flux controllers back, all evaluation Patterns applied
+
+==> [06:59:27] done (outcluster)
+kyverno controllers restored

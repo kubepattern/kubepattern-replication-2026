@@ -1,0 +1,3 @@
+pattern.kubepattern.dev/kubevela-builtin-traitdefinition-not-used created
+ComponentDefinition: 10 built-in, 8 unused per oracle, KubePattern agrees on 10/10
+TraitDefinition: 35 built-in, 32 unused per oracle, KubePattern agrees on 35/35

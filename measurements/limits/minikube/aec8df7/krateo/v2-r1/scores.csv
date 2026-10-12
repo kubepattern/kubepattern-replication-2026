@@ -1,0 +1,14 @@
+platform,pattern,positives,negatives,TP,FP,FN,TN,precision,recall,probes,probes_predicted,probe_FN,probe_FP,unlisted
+scenario,krateo-compositiondefinition-unused,1,2,1,0,0,2,1.00,1.00,1,1,0,0,0
+scenario,krateo-navmenuitem-page-missing,2,7,2,0,0,7,1.00,1.00,1,1,0,0,0
+scenario,krateo-restaction-endpoint-missing,7,16,7,0,0,16,1.00,1.00,2,2,0,0,0
+scenario,krateo-restaction-manager-missing,6,1,6,0,0,1,1.00,1.00,0,0,0,0,0
+scenario,krateo-restaction-not-used,17,19,17,0,0,19,1.00,1.00,1,1,0,0,0
+scenario,krateo-rolebinding-clusterrole-missing,3,7,3,0,0,7,1.00,1.00,0,0,0,0,0
+scenario,krateo-rolebinding-subject-sa-missing,11,26,11,0,0,26,1.00,1.00,2,2,0,0,0
+scenario,krateo-widget-manager-missing,4,7,4,0,0,7,1.00,1.00,10,10,0,0,0
+scenario,krateo-yamlviewer-apiref-dangling,3,10,3,0,0,10,1.00,1.00,0,0,0,0,0
+scenario,page-not-referenced,2,4,2,0,0,4,1.00,1.00,2,2,0,1,0
+scenario,panel-not-referenced,2,18,2,0,0,18,1.00,1.00,5,5,2,0,0
+scenario,paragraph-not-referenced,3,5,3,0,0,5,1.00,1.00,1,1,0,0,0
+all,TOTAL,61,122,61,0,0,122,1.00,1.00,25,25,2,1,0

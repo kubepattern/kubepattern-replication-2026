@@ -1,0 +1,14 @@
+smell,family,rows,smells_true,kubepattern,kyverno_equivalent,kyverno_best_effort,limitations,kp_vs_equivalent_verdicts,kp_truth_agreement,equivalent_truth_agreement,best_effort_truth_agreement,note
+page-not-referenced,orphan widget,8,3,partial,partial,expressible,G1; scope,8/8,6/8,6/8,7/8,"items[*].name/namespace not correlated; Pages reached through a Route are out of the given Pattern's scope (fixable in both tools, kept in best-effort to stay comparable)"
+panel-not-referenced,orphan widget,25,4,partial,partial,expressible,G7/G5; scope; version pin,25/25,20/25,20/25,23/25,Panels listed by label (krateo.io/portal-page) look orphan; names only (scope kept in best-effort); the given Pattern pins PortalBlueprintPage v1-0-10
+paragraph-not-referenced,orphan widget,9,4,partial,partial,expressible,G1,9/9,8/9,8/9,9/9,items[*].name/namespace not correlated
+krateo-yamlviewer-apiref-dangling,dangling reference,13,3,expressible,expressible,expressible,,13/13,13/13,13/13,13/13,scalar name + namespace
+krateo-restaction-not-used,orphan RESTAction,37,17,partial,partial,partial,G6; G4,37/37,36/37,36/37,37/37,24 widget kinds enumerated in both tools (CEL cannot discover kinds either); /call paths are string-encoded references
+krateo-restaction-endpoint-missing,dangling reference (silent),25,9,partial,partial,expressible,G1; G2,25/25,23/25,23/25,25/25,"every endpoint must resolve, with name and namespace of the same entry"
+krateo-widget-manager-missing,dangling label reference,21,14,partial,partial,expressible,G6,21/21,11/21,11/21,21/21,one target kind per Pattern; the managed-by label is also on YamlViewers and RESTActions
+krateo-restaction-manager-missing,dangling label reference,7,6,not expressible,n/a,expressible,G5,-,-,-,7/7,label key krateo.io/managed-by contains dots
+krateo-navmenuitem-page-missing,dangling reference,10,3,partial,partial,expressible,G1,10/10,9/10,9/10,10/10,widgetData.resourceRefId must be joined with resourcesRefs.items[].id
+krateo-rolebinding-clusterrole-missing,dangling reference (RBAC),10,3,expressible,expressible,expressible,(G5),10/10,10/10,10/10,10/10,"cluster-wide: KubePattern cannot scope it to compositions (krateo.io/composition-id), Kyverno could"
+krateo-rolebinding-subject-sa-missing,dangling reference (RBAC),39,13,partial,partial,expressible,G1; G2,39/39,37/39,37/39,39/39,"kind, name and namespace of the same subject; every ServiceAccount subject must exist"
+krateo-compositiondefinition-unused,unused definition,4,1,partial,partial,expressible,G6,4/4,3/4,3/4,4/4,"each definition generates its own kind: enumerated in the Pattern, listed live (resource.List) by best-effort CEL"
+(dynamic references),orphan widget,0,0,not expressible,not expressible,not expressible,G9,-,-,-,-,"references computed by snowplow at request time (resourcesRefsTemplate over a RESTAction's jq output, route placeholders {kind}-{name}); only the label part of the portal discovery can be approximated"

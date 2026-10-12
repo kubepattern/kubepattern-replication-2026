@@ -1,0 +1,3 @@
+[submodule "kubepattern"]
+	path = kubepattern
+	url = https://github.com/kubepattern/kubepattern.git

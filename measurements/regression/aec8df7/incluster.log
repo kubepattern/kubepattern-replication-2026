@@ -1,0 +1,53 @@
+
+==> [22:31:08] install aec8df7 (CRDs re-applied: helm does not upgrade them)
+installed localhost/kubepattern:eval-aec8df7
+
+==> [22:31:08] RQ2: first run (Smells gain phase/since) + 3 scored runs
+TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0
+score exit=0
+phases after the first run: {"Active":46}
+TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0
+score exit=0
+TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0
+score exit=0
+TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0
+score exit=0
+
+==> [22:31:34] RQ2b: mutation testing
+mutants: 15  killed: 15  unexpected new smells: 0  lost baseline smells: 0  reverted==baseline: True
+
+==> [22:32:22] D8: overlapping runs (local run starts when the Job's container runs)
+Done                       CONC_WAIT=ready "$S/concurrency_check.sh" | tee "$OUT/concurrency.txt"
+
+==> [22:42:34] RQ5: CronJob timeline
+Warning: infrastructure.cluster.x-k8s.io/v1beta2 DockerMachineTemplate is deprecated
+Warning: store ss-new-unused isn't currently maintained. Please plan and prepare accordingly.
+Warning: infrastructure.cluster.x-k8s.io/v1beta2 DockerMachineTemplate is deprecated
+Warning: infrastructure.cluster.x-k8s.io/v1beta2 DockerMachineTemplate is deprecated
+run 1: job kubepattern-cronjob-29862644 smells=46 22:44:06
+run 2: job kubepattern-cronjob-29862646 smells=42 22:46:09
+run 3: job kubepattern-cronjob-29862648 smells=45 22:48:05
+run 4: job kubepattern-cronjob-29862650 smells=45 22:50:07
+run 5: job kubepattern-cronjob-29862652 smells=45 22:52:04
+run 6: job kubepattern-cronjob-29863108 smells=45 06:29:47
+run 7: job kubepattern-cronjob-29863110 smells=46 06:30:08
+run 8: job kubepattern-cronjob-29863112 smells=46 06:32:05
+run 9: job kubepattern-cronjob-29863114 smells=46 06:34:05
+CronJob suspended again.
+run 1:  46 smells (expected  46) OK  +46 =0 ~0 -0 4s skipped=[]  <- baseline
+run 2:  42 smells (expected  42) OK  +0 =42 ~0 -4 4s skipped=[]  <- after E1 fix (4 smells resolved)
+run 3:  45 smells (expected  45) OK  +3 =42 ~0 -0 3s skipped=[]  <- after E2 inject (3 new smells)
+run 4:  45 smells (expected  45) OK  +0 =45 ~0 -0 4s skipped=[kratix-promise-without-requests]  <- after E3 add pattern with missing CRD
+run 5:  45 smells (expected  45) OK  +0 =45 ~0 -0 4s skipped=[kargo-warehouse-not-requested;kratix-promise-without-requests]  <- after E4 RBAC without kargo.akuity.io
+run 6:  45 smells (expected  45) OK  +0 =45 ~0 -0 15s skipped=[kratix-promise-without-requests]  <- after E5 RBAC restored
+run 7:  46 smells (expected  46) OK  +1 =45 ~0 -0 4s skipped=[kratix-promise-without-requests]  <- after E6 rotation step 1 (new template not yet used)
+run 8:  46 smells (expected  46) OK  +1 =45 ~0 -1 4s skipped=[kratix-promise-without-requests]  <- after E6 rotation step 2 (switch)
+run 9:  46 smells (expected  46) OK  +4 =42 ~0 -4 4s skipped=[]  <- after E7 revert
+timeline exit=0
+
+==> [06:34:11] final baseline
+TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0
+score exit=0
+
+==> [06:34:18] done (incluster)
+kyverno controllers restored

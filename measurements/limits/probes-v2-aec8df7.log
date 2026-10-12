@@ -1,0 +1,25 @@
+
+==> [06:36:32] v2 Patterns over the evaluated ones
+installed: 8 v2 of 14 Patterns
+
+==> [06:36:39] RQ2 with the v2 Patterns: 3 runs, probes scored against the truth
+TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0
+score exit=0 smells=50 {"seconds":4,"apiRequests":156}
+TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0
+score exit=0 smells=50 {"seconds":4,"apiRequests":153}
+TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0
+score exit=0 smells=50 {"seconds":4,"apiRequests":153}
+
+==> [06:37:00] mutation testing with the v2 Patterns
+mutants: 15  killed: 15  unexpected new smells: 0  lost baseline smells: 0  reverted==baseline: True
+
+==> [06:37:56] KubeVela natural state (original catalogue Patterns, new engine)
+pattern.kubepattern.dev/kubevela-builtin-traitdefinition-not-used created
+ComponentDefinition: 10 built-in, 8 unused per oracle, KubePattern agrees on 10/10
+TraitDefinition: 35 built-in, 32 unused per oracle, KubePattern agrees on 35/35
+
+==> [06:38:05] restore the original Patterns
+TOTAL                                          43  52  43   0   0  52  1.00  1.00    10( 10)    0
+score exit=0
+
+==> [06:38:17] done
