@@ -66,18 +66,18 @@ RESULTS.md      results of every experiment
 Every script resolves paths from its own location, so the scripts can be run from anywhere. The examples below assume the repository root as working directory.
 
 ## Engine versions under test
-The engine is built from the `kubepattern/` submodule, which is pinned to `5663a3d` of `dev`; its engine code is the same as `aec8df7`. Every experiment names the engine by a **label**. The label is used in image tags (`localhost/kubepattern:eval-<label>`), binaries (`bin/kubepattern-<label>`) and measurement folders.
+The engine is built from the `kubepattern/` submodule, which is pinned to `0bab1b6` of `dev`. Its engine is `aec8df7` plus the D2 fix `e221eb1` of `main`: a resource type whose LIST failed fails every later pattern that reads it, with no extra request. No scenario has a failed LIST, so no result changes (the offline tests and the replay give the same numbers). Every experiment names the engine by a **label**. The label is used in image tags (`localhost/kubepattern:eval-<label>`), binaries (`bin/kubepattern-<label>`) and measurement folders.
 
-Some labels are commit SHAs from before a history rewrite of the engine repository and do not exist on GitHub. `kp_ref` in [`env/versions.env`](env/versions.env) maps them to their public commits. The first three pairs have identical engine source, chart and Dockerfile; `scripts/build-image.sh` rebuilds the image of `69d4ffd` from `16afa6a` with a byte-identical binary. `wp0` was rebuilt from `b4df203` byte-identically: sha256 `cc460a0d…`, built with `go build` in `golang:1.25.8-alpine`.
+Some labels are commit SHAs from before a history rewrite of the engine repository and do not exist on GitHub. `kp_ref` in [`env/versions.env`](env/versions.env) maps them to their public commits, each anchored by a tag `eval/<label>` of the engine repository. The first three pairs have identical engine source, chart and Dockerfile; `scripts/build-image.sh` rebuilds the image of `69d4ffd` from `16afa6a` with a byte-identical binary. `wp0` was rebuilt from `b4df203` byte-identically: sha256 `cc460a0d…`, built with `go build` in `golang:1.25.8-alpine`.
 
-| Label | Public commit | Branch | Engine | Used by |
-|---|---|---|---|---|
-| `69d4ffd` | `16afa6a` | `dev` (Sept. 2026) | as-is engine, evaluated unmodified | RQ1–RQ6, Krateo case study |
-| `a814e4a` | `0a51e7a` | `fix/per-pattern-prune` | per-pattern Smell prune (fixes D8, D9) | fix validation; KubePattern side of RQ6 |
-| `wp0` | `b4df203` | `chore/engine-cleanup` | prune + client QPS 50/100 + linter | QPS validation (`measurements/qps/`) |
-| `54dc498` | `24f288a` | `feat/for` | engine update: QPS, linter, `spec.for` | engine update regression, RQ8 |
-| `50e0222` | `50e0222` | `dev` | `dev` before the limitations update | baseline of the offline replay |
-| `aec8df7` | `aec8df7` | `feat/resolve-probes` (merged into `dev`) | limitations update (G1–G7, G10) | limitations update |
+| Label | Public commit | Tag | Branch | Engine | Used by |
+|---|---|---|---|---|---|
+| `69d4ffd` | `16afa6a` | `eval/69d4ffd` | `dev` of Sept. 2026 | as-is engine, evaluated unmodified | RQ1–RQ6, Krateo case study |
+| `a814e4a` | `0a51e7a` | `eval/a814e4a` | `fix/per-pattern-prune` | per-pattern Smell prune (fixes D8, D9) | fix validation; KubePattern side of RQ6 |
+| `wp0` | `b4df203` | `eval/wp0` | `chore/engine-cleanup` | prune + client QPS 50/100 + linter | QPS validation (`measurements/qps/`) |
+| `54dc498` | `24f288a` | `eval/54dc498` | `feat/for` | engine update: QPS, linter, `spec.for` | engine update regression, RQ8 |
+| `50e0222` | `50e0222` | `eval/50e0222` | `feat/resolve-probes` (its base) | before the limitations update | baseline of the offline replay |
+| `aec8df7` | `aec8df7` | `eval/aec8df7` | `feat/resolve-probes` | limitations update (G1–G7, G10) | limitations update |
 
 `KP_COMMIT=<label>` selects the engine in every script; its default is `69d4ffd`. Any other commit or branch of the engine repository is passed through unchanged.
 
