@@ -66,7 +66,7 @@ RESULTS.md      results of every experiment
 Every script resolves paths from its own location, so the scripts can be run from anywhere. The examples below assume the repository root as working directory.
 
 ## Engine under test
-The `kubepattern/` submodule is the only reference to the engine. It is pinned to `1341079` of the engine's `dev` branch; it will be moved to the commit of the KubePattern release that the paper describes. Every script builds and runs that commit: `KP_COMMIT` defaults to the submodule's checked-out commit (short SHA), `scripts/build-image.sh` builds the image `localhost/kubepattern:eval-<KP_COMMIT>` from it with `git archive`, and extracts the binary `bin/kubepattern-<KP_COMMIT>`. `KP_COMMIT=<commit>` selects another commit of the engine repository.
+The `kubepattern/` submodule is the only reference to the engine. It is pinned to the release [`v0.1.0`](https://github.com/kubepattern/kubepattern/releases/tag/v0.1.0) (`39fa41b`), the KubePattern release that the paper describes. Its engine and tests are those of `1341079` of the `dev` branch; only the chart version differs. Every script builds and runs that commit: `KP_COMMIT` defaults to the submodule's checked-out commit (short SHA), `scripts/build-image.sh` builds the image `localhost/kubepattern:eval-<KP_COMMIT>` from it with `git archive`, and extracts the binary `bin/kubepattern-<KP_COMMIT>`. `KP_COMMIT=<commit>` selects another commit of the engine repository.
 
 The measurements in `measurements/` were recorded during development with earlier builds of the engine. Their labels appear in folder names, image tags and tables:
 
